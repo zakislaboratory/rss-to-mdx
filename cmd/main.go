@@ -95,6 +95,9 @@ creator: "%s"
 `, item.Title, item.Description, item.Link, item.GUID,
 			date, item.Creator, content)
 
+		// Add a line at the bottom that says "this was first published on Circadian Growth"
+		mdxContent += ("\n\n---\n\nThis was originally published on my weekly newsletter [Circadian Growth](https://circadiangrowth.com)")
+
 		// Clean up title for filename
 		filename := cleanFilename(item.Title) + ".mdx"
 
