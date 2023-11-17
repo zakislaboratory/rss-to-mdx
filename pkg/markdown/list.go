@@ -7,19 +7,23 @@ import (
 )
 
 type List struct {
-	Content string
+	Content   string
+	IsOrdered bool
 }
 
-func (l *List) Markdown() string {
-	return l.Content
-}
+func (l *List) Markdown() string { return l.Content }
 
-func convertList(s *goquery.Selection) MarkdownElement {
+func (l *List) Type() ElementType { return ElementTypeList }
+
+func NewList(s *goquery.Selection) Element {
+
 	switch s.Get(0).Data {
+
 	case "ul":
-		return &List{convertUnorderedList(s)}
+		return &List{convertUnorderedList(s), false}
 	case "ol":
-		return &List{convertOrderedList(s)}
+		return &List{convertOrderedList(s), true}
+
 	default:
 		panic(fmt.Sprintf("Unknown list type: %s", s.Get(0).Data))
 	}
