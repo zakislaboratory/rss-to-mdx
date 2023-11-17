@@ -125,10 +125,10 @@ func convertHTMLToMarkdownSimple(htmlContent string) (string, error) {
 	doc.Find("body *").Each(func(_ int, s *goquery.Selection) {
 		switch s.Get(0).Data {
 		case "p":
-			markdownContent += "\n\n" + s.Text() + "\n\n"
+			markdownContent += "\n" + s.Text() + "\n"
 		case "h1", "h2", "h3", "h4", "h5", "h6":
 			level, _ := strconv.Atoi(s.AttrOr("level", "2"))
-			markdownContent += fmt.Sprintf("\n\n%s %s\n\n", strings.Repeat("#", level), s.Text())
+			markdownContent += fmt.Sprintf("\n%s %s\n", strings.Repeat("#", level), s.Text())
 		case "a":
 			href, _ := s.Attr("href")
 			markdownContent += fmt.Sprintf("[%s](%s)", s.Text(), href)
