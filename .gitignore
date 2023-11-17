@@ -1,3 +1,4 @@
 *.env*
 output/
 test.xml
+*.DS_Store
