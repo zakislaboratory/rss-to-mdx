@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -23,16 +22,22 @@ type RSSItem struct {
 
 func main() {
 
+	showHelp := flag.Bool("help", false, "Show help and usage information")
 	xmlPath := flag.String("xml", "", "Path to the XML file containing RSS items")
-	outputDir := flag.String("outputDir", "output", "Output directory for MDX files")
+	outputDir := flag.String("out", "output", "Output directory for MDX files")
 	flag.Parse()
+
+	if *showHelp {
+		flag.Usage()
+		return
+	}
 
 	if *xmlPath == "" {
 		fmt.Println("Error: Please provide the path to the XML file using the -xml flag.")
 		return
 	}
 
-	xmlData, err := ioutil.ReadFile(*xmlPath)
+	xmlData, err := os.ReadFile(*xmlPath)
 	if err != nil {
 		fmt.Printf("Error reading XML file: %v\n", err)
 		return
@@ -55,7 +60,6 @@ func main() {
 
 	// Process each RSS item
 	for _, item := range rss.Items {
-		// Prepare MDX content
 		mdxContent := fmt.Sprintf(`---
 title: "%s"
 description: "%s"
@@ -73,7 +77,7 @@ creator: "%s"
 
 		// Write MDX content to file
 		outputPath := filepath.Join(*outputDir, filename)
-		err := ioutil.WriteFile(outputPath, []byte(mdxContent), os.ModePerm)
+		err := os.WriteFile(outputPath, []byte(mdxContent), os.ModePerm)
 		if err != nil {
 			fmt.Printf("Error writing MDX file %s: %v\n", filename, err)
 		} else {
