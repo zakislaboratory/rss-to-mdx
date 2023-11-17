@@ -7,6 +7,11 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Heading represents a Markdown heading element.
+// Example:
+// # Heading 1
+// ## Heading 2
+// ### Heading 3
 type Heading struct {
 	Level   int
 	Content string
@@ -16,7 +21,9 @@ func (h Heading) Markdown() string {
 	return fmt.Sprintf("%s %s\n", strings.Repeat("#", h.Level), h.Content)
 }
 
-func convertHeading(s *goquery.Selection) MarkdownElement {
+func (h Heading) Type() ElementType { return ElementTypeHeading }
+
+func NewHeading(s *goquery.Selection) Element {
 
 	lvl, err := s.Attr("level")
 	if !err {

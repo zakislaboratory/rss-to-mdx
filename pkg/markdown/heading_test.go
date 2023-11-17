@@ -46,7 +46,7 @@ func TestConvertHeading(t *testing.T) {
 
 			h := doc.Find("h" + fmt.Sprint(tc.level)).First()
 
-			got := convertHeading(h)
+			got := NewHeading(h)
 
 			if got.Markdown() != tc.want {
 				t.Errorf("convertHeading(%s) = %s; want %s", tc.rawHTML, got.Markdown(), tc.want)
