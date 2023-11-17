@@ -1,6 +1,6 @@
 # RSS to MDX Converter
 
-Convert RSS feed items to individual MDX (Markdown with Front Matter) files for static site generators or MDX-based bloggs.
+Convert RSS feed items to individual MDX (Markdown with Front Matter) files for static site generators or MDX-based blogs.
 
 ## How it Works
 
@@ -24,11 +24,11 @@ cd rss-to-mdx-converter
 ## Usage 
 
 ```
-go run main.go -xml path/to/rss.xml -outputDir path/to/output
+go run main.go -xml path/to/rss.xml -out path/to/output
 ```
   
 - xml: Path to the XML file containing RSS feed items.
-- outputDir (optional): Output directory for MDX files. Default is output in the current directory.
+- out (optional): Output directory for MDX files. Default is output in the current directory.
 
 
 
