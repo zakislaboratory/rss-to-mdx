@@ -96,7 +96,7 @@ creator: "%s"
 			date, item.Creator, content)
 
 		// Add a line at the bottom that says "this was first published on Circadian Growth"
-		mdxContent += ("\n\n---\n\nThis was originally published on my weekly newsletter [Circadian Growth](https://circadiangrowth.com)")
+		mdxContent += ("\n\n---\n\nThis was originally published on my weekly newsletter [Circadian Growth](circadiangrowth.com)")
 
 		// Clean up title for filename
 		filename := cleanFilename(item.Title) + ".mdx"
@@ -164,24 +164,25 @@ func convertHTMLToMarkdownSimple(htmlContent string) (string, error) {
 	return markdownContent, nil
 }
 
+// stripClassesFromHTML removes class attributes from HTML elements
+// i.e. : <div class='myUnknownClass'> => <div>
 func stripClassesFromHTML(htmlContent string) string {
-	// Remove class attributes from HTML elements
-	// i.e. : <div class='beehiiv'> or <div class="beehiiv"> => <div>
 	re := regexp.MustCompile(` class=['"][^'"]*['"]`)
 	return re.ReplaceAllString(htmlContent, "")
 }
 
+// stripStylesFromHTML removes style attributes from HTML elements
+// i.e. : <div style='color: red;'> or <div style="color: red;"> => <div>
 func stripStylesFromHTML(htmlContent string) string {
-	// Remove style attributes from HTML elements
-	// i.e. : <div style='color: red;'> or <div style="color: red;"> => <div>
 	re := regexp.MustCompile(` style=['"][^'"]*['"]`)
 	return re.ReplaceAllString(htmlContent, "")
 }
 
 // cleanFilename removes invalid characters from a string to be used as a filename
 func cleanFilename(s string) string {
-	// Replace invalid characters with underscores
+
 	invalidChars := []string{"/", ":", "?", "<", ">", "|", "\"", "*", "'", ",", "&"}
+
 	for _, char := range invalidChars {
 		s = strings.ReplaceAll(s, char, "")
 	}
@@ -189,17 +190,16 @@ func cleanFilename(s string) string {
 	s = strings.ReplaceAll(s, " ", "-")
 	s = strings.Trim(s, "_")
 	s = strings.ToLower(s)
+
 	return s
 }
 
 func convertDateFormat(inputDate string) (string, error) {
-	// Parse the input date string
 	parsedTime, err := time.Parse("Mon, 02 Jan 2006 15:04:05 -0700", inputDate)
 	if err != nil {
 		return "", err
 	}
 
-	// Format the date in the desired output format
 	outputDate := parsedTime.Format("2006-01-02")
 
 	return outputDate, nil
