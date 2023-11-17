@@ -11,8 +11,10 @@ func (l *Link) Markdown() string {
 	return "[" + l.Text + "](" + l.Href + ")"
 }
 
-// convertAnchor converts an HTML anchor element to a Markdown link.
-func convertAnchor(s *goquery.Selection) MarkdownElement {
+func (l *Link) Type() ElementType { return ElementTypeAnchor }
+
+// NewLink creates a Markdown link from a *goquery.Selection.
+func NewLink(s *goquery.Selection) Element {
 	href, _ := s.Attr("href")
 	return &Link{
 		Text: s.Text(),

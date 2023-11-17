@@ -31,10 +31,10 @@ func TestConvertAnchor(t *testing.T) {
 
 			a := doc.Find("a").First()
 
-			got := convertAnchor(a)
+			link := NewLink(a)
 
-			if got.Markdown() != tc.want {
-				t.Errorf("convertAnchor(%s) = %s; want %s", tc.rawHTML, got.Markdown(), tc.want)
+			if link.Markdown() != tc.want {
+				t.Errorf("convertAnchor(%s) = %s; want %s", tc.rawHTML, link.Markdown(), tc.want)
 			}
 
 		})
