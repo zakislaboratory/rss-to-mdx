@@ -7,6 +7,7 @@ const (
 	ElementTypeHeading
 	ElementTypeAnchor
 	ElementTypeList
+	ElementTypeListItem
 )
 
 type Element interface {
@@ -25,6 +26,10 @@ func (e *element) Type() ElementType {
 
 func (e *element) Markdown() string {
 	return e.markdown
+}
+
+func (e *element) Children() []Element {
+	return nil
 }
 
 func NewElement(elementType ElementType, text string) Element {

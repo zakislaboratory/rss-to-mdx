@@ -48,3 +48,19 @@ func convertOrderedList(s *goquery.Selection) string {
 
 	return markdownContent
 }
+
+type ListItem struct {
+	Content string
+}
+
+func (li *ListItem) Markdown() string { return li.Content }
+
+func (li *ListItem) Type() ElementType { return ElementTypeListItem }
+
+func NewListItem(s *goquery.Selection) Element {
+	return &ListItem{convertListItem(s)}
+}
+
+func convertListItem(s *goquery.Selection) string {
+	return s.Text()
+}
