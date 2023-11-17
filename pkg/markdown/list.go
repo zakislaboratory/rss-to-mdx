@@ -6,12 +6,20 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func convertList(s *goquery.Selection) string {
+type List struct {
+	Content string
+}
+
+func (l *List) Markdown() string {
+	return l.Content
+}
+
+func convertList(s *goquery.Selection) MarkdownElement {
 	switch s.Get(0).Data {
 	case "ul":
-		return convertUnorderedList(s)
+		return &List{convertUnorderedList(s)}
 	case "ol":
-		return convertOrderedList(s)
+		return &List{convertOrderedList(s)}
 	default:
 		panic(fmt.Sprintf("Unknown list type: %s", s.Get(0).Data))
 	}
