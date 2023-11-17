@@ -89,9 +89,13 @@ creator: "%s"
 // cleanFilename removes invalid characters from a string to be used as a filename
 func cleanFilename(s string) string {
 	// Replace invalid characters with underscores
-	invalidChars := []string{"/", ":", "?", "<", ">", "|", "\"", "*"}
+	invalidChars := []string{"/", ":", "?", "<", ">", "|", "\"", "*", "'", ",", "&"}
 	for _, char := range invalidChars {
-		s = strings.ReplaceAll(s, char, "_")
+		s = strings.ReplaceAll(s, char, "")
 	}
+
+	s = strings.ReplaceAll(s, " ", "-")
+	s = strings.Trim(s, "_")
+	s = strings.ToLower(s)
 	return s
 }
