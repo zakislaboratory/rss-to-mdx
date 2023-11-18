@@ -28,7 +28,7 @@ go run main.go -xml path/to/rss.xml -out path/to/output
 ```
   
 - xml: Path to the XML file containing RSS feed items.
-- out (optional): Output directory for MDX files. Default is output in the current directory.
+- out (optional): Output directory for MDX files. Defaults to `output/` in the root directory.
 
 
 
