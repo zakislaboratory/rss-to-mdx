@@ -18,7 +18,7 @@ type Heading struct {
 }
 
 func (h Heading) Markdown() string {
-	return fmt.Sprintf("%s %s\n", strings.Repeat("#", h.Level), h.Content)
+	return fmt.Sprintf("%s %s", strings.Repeat("#", h.Level), h.Content)
 }
 
 func (h Heading) Type() ElementType { return ElementTypeHeading }
@@ -27,7 +27,8 @@ func NewHeading(s *goquery.Selection) Element {
 
 	lvl, err := s.Attr("level")
 	if !err {
-		panic(fmt.Sprintf("Heading element does not have a level attribute: %s", s.Text()))
+		// Default to level 2
+		lvl = "2"
 	}
 
 	level := int(lvl[0] - '0')
