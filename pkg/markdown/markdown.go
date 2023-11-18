@@ -33,81 +33,81 @@ func (md *document) Content() (string, error) {
 		return "", fmt.Errorf("error loading HTML content into goquery document: %v", err)
 	}
 
-	var content string
+	content := convertSelection(doc.Find("body").Children())
 
-	doc.Find("body").Children().Each(func(_ int, s *goquery.Selection) {
-
-		// Convert the selection to Markdown
-		markdownContent := convertSelection(s)
-
-		// If the selection should be removed, skip it
-		if md.shouldRemove(markdownContent) {
-			return
-		}
-
-		// Add the Markdown content to the document
-		content += markdownContent + "\n\n"
-	})
-
-	content = strings.ReplaceAll(content, "\n\n", "\n")
-	content = strings.TrimSuffix(content, "\n")
+	for _, pattern := range md.removePatterns {
+		content = pattern.ReplaceAllString(content, "")
+	}
 
 	return content, nil
 }
 
 func convertSelection(s *goquery.Selection) string {
 
-	elements := make([]Element, 0)
-
 	text := s.Text()
+
+	if text == "" {
+		return ""
+	}
 
 	switch s.Get(0).Data {
 	case "p":
-		elements = append(elements, NewParagraph(s))
+		text = NewParagraph(s).Markdown()
 	case "h1", "h2", "h3", "h4", "h5", "h6":
-		elements = append(elements, NewHeading(s))
+		text = NewHeading(s).Markdown()
 	case "a":
-		elements = append(elements, NewLink(s))
+		text = NewLink(s).Markdown()
 	case "ul", "ol":
-		elements = append(elements, NewList(s))
-	case "body":
-		// Do nothing
+		text = NewList(s).Markdown()
+	case "li":
+		text = NewListItem(s).Markdown()
+	case "strong", "b":
+		text = NewText(s).Bold()
+	case "em", "i":
+		text = NewText(s).Italic()
+	case "del":
+		text = NewText(s).Strikethrough()
+	case "blockquote":
+		text = NewBlockQuote(s).Markdown()
+	case "code":
+		text = NewCodeBlock(s).Markdown()
 	default:
-		panic(fmt.Sprintf("Unknown element: %s", s.Get(0).Data))
+		// Do nothing
 	}
 
 	// If the selection has children, we have to convert it to a
 	// Markdown element, then replace the text in the parent with the
 	// child's Markdown text.
-	s.Children().Each(func(_ int, s *goquery.Selection) {
-		childMarkdown := convertSelection(s)
+	s.Children().Each(func(_ int, c *goquery.Selection) {
+
+		childMarkdown := convertSelection(c)
+
 		// Replace the child's text in the parent's text
-		text = strings.ReplaceAll(text, s.Text(), childMarkdown)
+		if childMarkdown != "" {
+			text = strings.Replace(text, c.Text(), childMarkdown, 1)
+		}
 	})
 
-	// Replace the selection's text with the Markdown text
-	text = strings.ReplaceAll(text, s.Text(), elements[0].Markdown())
+	// We only add space for certain elements
+	el := s.Get(0).Data
 
-	return text
-}
-
-func (md *document) shouldRemove(markdownContent string) bool {
-
-	for _, pattern := range md.removePatterns {
-
-		if pattern.MatchString(markdownContent) {
-			return true
-		}
+	if el == "p" || el == "li" {
+		text = text + "\n\n"
 	}
 
-	return false
+	// for blockquotes and headings, we also prepend a newline
+	if el == "blockquote" || el == "h1" || el == "h2" || el == "h3" || el == "h4" || el == "h5" || el == "h6" {
+		text = "\n\n" + text + "\n\n"
+	}
+
+	return text
 }
 
 func (md *document) RemoveMatches(pattern *regexp.Regexp) {
 	md.removePatterns = append(md.removePatterns, pattern)
 }
 
-func NewMarkdownDocument(rawHtml string) MarkdownDocument {
+func NewDocument(rawHtml string) MarkdownDocument {
 	return &document{
 		html:           rawHtml,
 		removePatterns: make([]*regexp.Regexp, 0),

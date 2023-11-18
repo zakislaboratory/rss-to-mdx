@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test(t *testing.T) {
+func TestMarkdown(t *testing.T) {
 
 	tcs := []struct {
 		name string
@@ -22,12 +22,22 @@ func Test(t *testing.T) {
 			in:   `<p class="paragraph" style="text-align:start;">I even produce some of <a class="link" href="https://soundcloud.com/zakimusicofficial/tracks?utm_source=circadiangrowth.beehiiv.com&utm_medium=newsletter&utm_campaign=melodic-mastery-4-ways-music-can-improve-our-lives" target="_blank" rel="noopener noreferrer nofollow">my own electronic music</a> from time to time (shameless self plug).</p>`,
 			want: `I even produce some of [my own electronic music](https://soundcloud.com/zakimusicofficial/tracks?utm_source=circadiangrowth.beehiiv.com&utm_medium=newsletter&utm_campaign=melodic-mastery-4-ways-music-can-improve-our-lives) from time to time (shameless self plug).`,
 		},
+		{
+			name: "Bold paragraph",
+			in:   `<p class="paragraph" style="text-align:start;"><strong>What is Melodic Mastery?</strong></p>`,
+			want: `**What is Melodic Mastery?**`,
+		},
+		{
+			name: "Bold header",
+			in:   `<h2 class="heading" style="text-align:left;"><b>To summarize:</b></h2>`,
+			want: `## **To summarize:**`,
+		},
 	}
 
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
 
-			got := NewMarkdownDocument(tc.in)
+			got := NewDocument(tc.in)
 
 			content, err := got.Content()
 			if err != nil {
@@ -49,7 +59,7 @@ func TestPatternMatches(t *testing.T) {
 <p>This is a partial match</p>
 	`
 
-	md := NewMarkdownDocument(html)
+	md := NewDocument(html)
 
 	// Define the regex pattern for the "complete match" line
 	completeMatchPattern := `This is a complete match`
