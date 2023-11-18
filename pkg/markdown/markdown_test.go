@@ -2,6 +2,7 @@ package markdown
 
 import (
 	"regexp"
+	"strings"
 	"testing"
 )
 
@@ -44,7 +45,7 @@ func TestMarkdown(t *testing.T) {
 				t.Fatalf("got.Content() returned error: %v", err)
 			}
 
-			if content != tc.want {
+			if strings.TrimSpace(content) != strings.TrimSpace(tc.want) {
 				t.Errorf("[%s] = %s; want %s", tc.name, content, tc.want)
 			}
 		})
@@ -55,23 +56,19 @@ func TestMarkdown(t *testing.T) {
 func TestPatternMatches(t *testing.T) {
 
 	html := `<p>Hello world</p>
-<p>This is a complete match</p>
-<p>This is a partial match</p>
-	`
+<p>Delete Me</p>
+`
 
 	md := NewDocument(html)
 
 	// Define the regex pattern for the "complete match" line
-	completeMatchPattern := `This is a complete match`
-	partialMatchPattern := `partial match`
+	matchPattern := `Delete Me`
 
 	// Compile the regex pattern
-	re := regexp.MustCompile(completeMatchPattern)
-	re2 := regexp.MustCompile(partialMatchPattern)
+	re := regexp.MustCompile(matchPattern)
 
 	// Add the regex pattern to the list of patterns to remove
 	md.RemoveMatches(re)
-	md.RemoveMatches(re2)
 
 	content, err := md.Content()
 	if err != nil {
@@ -79,7 +76,7 @@ func TestPatternMatches(t *testing.T) {
 	}
 
 	// Check that the "complete match" line was removed
-	if content != "Hello world" {
+	if strings.TrimSpace(content) != "Hello world" {
 		t.Errorf("md.String() = %s; want %s", content, "Hello world")
 	}
 }

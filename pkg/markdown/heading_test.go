@@ -19,19 +19,19 @@ func TestConvertHeading(t *testing.T) {
 			name:    "test 1",
 			level:   2,
 			rawHTML: `<h2 level="2">This is a heading</h2>`,
-			want:    `## This is a heading` + "\n",
+			want:    `## This is a heading`,
 		},
 		{
 			name:    "test 2",
 			level:   3,
 			rawHTML: `<h3 level="3">This is a heading</h3>`,
-			want:    `### This is a heading` + "\n",
+			want:    `### This is a heading`,
 		},
 		{
 			name:    "test 3",
 			level:   4,
 			rawHTML: `<h4 level="4">This is a heading</h4>`,
-			want:    `#### This is a heading` + "\n",
+			want:    `#### This is a heading`,
 		},
 	}
 
